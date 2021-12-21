@@ -8,7 +8,7 @@ router.get('/', async(req, res) => {
   // be sure to include its associated Product data
   try {
     const tagInfo = await Tag.findAll({
-    include: [{model: Product}, {model: ProductTag}],
+    include: [{model: Product}],
     });
    res.status(200).json(tagInfo);
 } catch (err) {
@@ -16,24 +16,20 @@ router.get('/', async(req, res) => {
 }
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   // find a single tag by its `id`
   // be sure to include its associated Product data
   try {
     const tagInfo = await Tag.findByPk(req.params.id, {
-      include: [{ model: ProductTag, through: Product, as: 'productTag_data' }]
+      include: [{ model: Product}]
 });
-    if (tagInfo) {
-      res.status(404).json({ message: 'There is no tag with this id.' });
-      return;
-    }
-    res.status(200).json(tagInfo);
+      res.status(200).json(tagInfo);
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // create a new tag
   try {
     const tagInfo = await Tag.create(req.body);
@@ -43,25 +39,22 @@ router.post('/', (req, res) => {
   }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // update a tag's name by its `id` value
   try {
-    const tagInfo = await Tag.put(req.body,)({
+    const tagInfo = await Tag.update(req.body,)({
       where: {
         id: req.params.id
       }
 });
-if (!tagInfo) {
-res.status(404).json({ message: 'There is no tag with this id.' });
-return;
-}
-res.status(200).json(tagInfo);
+
+res.json(tagInfo);
 } catch (err) {
-res.status(500).json(err);
+res.json(err);
 }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete on tag by its `id` value
   try {
     const tagInfo = await Tag.destroy({
@@ -70,14 +63,9 @@ router.delete('/:id', (req, res) => {
       }
     });
 
-    if (!tagInfo) {
-      res.status(404).json({ message: 'There is no tag with this id.' });
-      return;
-    }
-
-    res.status(200).json(tagInfo);
+    res.json(tagInfo);
   } catch (err) {
-    res.status(500).json(err);
+    res.json(err);
   }
 });
 
