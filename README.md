@@ -11,7 +11,6 @@ There is a category, product and tag table. Utilize the GET method to retrive da
 ## Technology
 
 Node
-Nodemon
 Express
 Mysql2
 sequelize
@@ -19,7 +18,7 @@ dotenv
 Insomnia
 
 ## Installation Instructions
-Copy app into your editor. Run npm i, seed, schema.sql in db. Once completed type in node server.js to make sure the server is listening. If server is listening go to insomnia and follow the provided walk through video.
+Copy app into your editor. Run npm i, seed, schema.sql in db folder. Once completed type in node server.js to make sure the server is listening. If server is listening go to insomnia and follow the provided walk through video.
 
 
 ## Walk Through Video

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const res = require('express/lib/response');
-const { Tag, Product, ProductTag } = require('../../models');
+const { Tag, Product } = require('../../models');
 
 // The `/api/tags` endpoint
 
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     });
    res.status(200).json(tagInfo);
 } catch (err) {
-  res.status(500).json(err);
+  res.status(400).json(err);
 }
 });
 
@@ -26,7 +26,7 @@ router.get('/:id', async (req, res) => {
 });
       res.status(200).json(tagInfo);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(400).json(err);
   }
 });
 
@@ -40,28 +40,36 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
-  // update a tag's name by its `id` value
-  try {
-    const updateTagInfo = await Tag.update({
-      where: {id: req.params.id,},
-  })
-  res.status(200).json(updateTagInfo);
-  }
-  catch (err) {
-    res.status(500).json(err);
-  }
-});
+router.put('/:id', (req, res) => {
+   // update a tag's name by its `id` value
+   Tag.update(
+      {
+        tag_name: req.body.tag_name,
+        id: req.body.id,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      })
+      .then((updatedTag) => {
+        res.json(updatedTag);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json(err);
+      });
+  });
 
 router.delete('/:id', async (req, res) => {
-  // delete on tag by its `id` value
+  // delete one tag by its `id` value
   try {
     const deleteTagInfo = await Tag.destroy({
       where: {id: req.params.id},
     })
   res.status(200).json(deleteTagInfo);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(400).json(err);
   }
 });
 
