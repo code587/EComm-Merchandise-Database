@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
     // {
     //   product_name: "Basketball",
     //   price: 200.00,
-    //   stoc: 3,
+    //   stock: 3,
     //   tagIds: [1, 2, 3, 4]
     // }
   Product.create(req.body)
