@@ -23,4 +23,4 @@ Copy app into your editor. Run npm i, seed, schema.sql in db folder. Once comple
 
 ## Walk Through Video
 
-![ecomm walk through](https://drive.google.com/file/d/1PvQvzANJIp9P7H7H_j1HYvKEtOedLMi2/view?usp=sharing)
+https://drive.google.com/file/d/1PvQvzANJIp9P7H7H_j1HYvKEtOedLMi2/view?usp=sharing
