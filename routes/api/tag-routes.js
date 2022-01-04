@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const res = require('express/lib/response');
-const { Tag, Product } = require('../../models');
+const { Tag, Product, ProductTag } = require('../../models');
 
 // The `/api/tags` endpoint
 
@@ -41,25 +41,46 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-   // update a tag's name by its `id` value
-   Tag.update(
-      {
-        tag_name: req.body.tag_name,
-        id: req.body.id,
+  // update product data
+     Tag.update(req.body,  {
+      where: {
+        id: req.params.id, 
       },
-      {
-        where: {
-          id: req.params.id,
-        },
+    })
+      .then((tag) => {
+       // find all associated products from ProductTag
+        return ProductTag.findAll({ where: { tag_id: req.params.id } });
       })
-      .then((updatedTag) => {
-        res.json(updatedTag);
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(400).json(err);
-      });
-  });
+      .then((productTags) => {
+        // get list of current tag_ids
+        const productTagIds = productTags.map(({ product_id }) => product_id);
+        // create filtered list of new tag_ids
+        const newProductTags = req.body.productIds
+          .filter((product_id) => !productTagIds.includes(product_id))
+          .map((product_id) => {
+            return {
+              tag_id: req.params.id,
+              product_id,
+            };
+        });
+       
+      //figure out which ones to remove
+      const productTagsToRemove = productTags
+        .filter(({ product_id }) => !req.body.productIds.includes(product_id))
+        .map(({ id }) => id);
+
+      // run both actions
+      return Promise.all([
+        ProductTag.destroy({ where: { id: productTagsToRemove } }),
+        ProductTag.bulkCreate(newProductTags),
+      ]);
+    })
+    .then((updatedTags) => res.json(updatedTags))
+    .catch((err) => {
+      // console.log(err);
+      res.status(400).json(err);
+    });
+});
 
 router.delete('/:id', async (req, res) => {
   // delete one tag by its `id` value
